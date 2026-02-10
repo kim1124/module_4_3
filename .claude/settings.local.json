@@ -2,7 +2,31 @@
   "permissions": {
     "allow": [
       "Bash(gh:*)",
-      "Bash(git:*)"
+      "Bash(git:*)",
+      "WebFetch(domain:goinsider.kr)",
+      "WebFetch(domain:www.data.go.kr)",
+      "Bash(.venvScriptspip install yfinance httpx)",
+      "Bash(\".venv\\\\Scripts\\\\pip\" install yfinance httpx)",
+      "Bash(\"C:/Users/student/Desktop/aicoding/module_4/backend/.venv/Scripts/pip3.exe\" install yfinance httpx)",
+      "Bash(.venv/Scripts/python:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill:*)",
+      "Bash(cmd /c \"taskkill /PID 20048 /F\")",
+      "Bash(cmd /c \"taskkill /PID 20048 /F /T\")",
+      "Bash(powershell -Command:*)",
+      "WebFetch(domain:localhost)",
+      "Bash(cmd /c \"taskkill /F /PID 7300 & taskkill /F /PID 18512\")",
+      "Bash(cmd /c \"wmic process where \"\"ProcessId=7300\"\" get Name,CommandLine 2>nul\")",
+      "Bash(powershell -NoProfile -Command \"taskkill /F /PID 7300; taskkill /F /PID 18512\")",
+      "Bash(powershell -NoProfile -Command \"\\(Invoke-WebRequest -Uri ''http://127.0.0.1:8000/api/gold/krx?period=1m'' -UseBasicParsing\\).StatusCode\")",
+      "Bash(powershell -NoProfile -Command \"\\(Invoke-WebRequest -Uri ''http://127.0.0.1:8000/api/health'' -UseBasicParsing\\).Content\")",
+      "Bash(powershell -NoProfile -Command \"\\(Invoke-WebRequest -Uri ''http://127.0.0.1:8000/api/widgets'' -UseBasicParsing\\).StatusCode\")",
+      "Bash(powershell -NoProfile -Command:*)",
+      "Bash(.venvScriptsactivate)",
+      "Bash(uvicorn app.main:app:*)",
+      "Bash(timeout /t 8 /nobreak:*)",
+      "Bash(source:*)"
     ]
   }
 }

@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app.database import get_db
 from app.models.user import User
-from app.schemas.user import UserCreate, UserResponse, Token
+from app.schemas.user import UserCreate, UserUpdate, UserResponse, Token
 from app.utils.security import hash_password, verify_password, create_access_token
 from app.dependencies.auth import get_current_user
 
@@ -112,3 +112,62 @@ def get_me(current_user: User = Depends(get_current_user)):
     토큰이 없거나 유효하지 않은 경우 401 Unauthorized 에러를 반환합니다.
     """
     return current_user
+
+
+@router.put("/me", response_model=UserResponse)
+def update_me(
+    user_data: UserUpdate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    현재 로그인한 사용자의 정보를 수정합니다.
+    """
+    if user_data.username is not None:
+        existing = db.query(User).filter(
+            User.username == user_data.username,
+            User.id != current_user.id
+        ).first()
+        if existing:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="이미 사용 중인 사용자명입니다"
+            )
+        current_user.username = user_data.username
+
+    if user_data.email is not None:
+        existing = db.query(User).filter(
+            User.email == user_data.email,
+            User.id != current_user.id
+        ).first()
+        if existing:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="이미 사용 중인 이메일입니다"
+            )
+        current_user.email = user_data.email
+
+    # 비밀번호 변경 로직
+    if user_data.new_password is not None:
+        if user_data.current_password is None:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="현재 비밀번호를 입력해주세요"
+            )
+        if not verify_password(user_data.current_password, current_user.hashed_password):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="현재 비밀번호가 올바르지 않습니다"
+            )
+        current_user.hashed_password = hash_password(user_data.new_password)
+
+    try:
+        db.commit()
+        db.refresh(current_user)
+        return current_user
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"사용자 정보 수정 실패: {str(e)}"
+        )

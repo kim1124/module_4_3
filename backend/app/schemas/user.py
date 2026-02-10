@@ -13,6 +13,13 @@ class UserLogin(BaseModel):
     password: str
 
 
+class UserUpdate(BaseModel):
+    username: str | None = Field(None, min_length=3, max_length=50)
+    email: EmailStr | None = None
+    current_password: str | None = None
+    new_password: str | None = Field(None, min_length=8)
+
+
 class UserResponse(BaseModel):
     id: int
     username: str

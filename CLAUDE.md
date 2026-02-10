@@ -29,9 +29,11 @@ cd frontend && npm run dev
 ## 아키텍처
 
 ### API 프록시
+
 프론트엔드의 `/api/*` 요청은 `next.config.js`의 rewrites 설정을 통해 백엔드(localhost:8000)로 프록시됩니다.
 
 ### 백엔드 구조
+
 ```
 backend/app/
 ├── main.py          # FastAPI 앱 진입점, 라우터 등록
@@ -42,16 +44,20 @@ backend/app/
 ```
 
 ### 프론트엔드 구조
+
 ```
 frontend/src/
 ├── app/             # Next.js App Router 페이지
+├── pages/           # Page 모음
 └── components/      # React 컴포넌트
 ```
 
 ## API 문서
+
 백엔드 실행 후 http://localhost:8000/docs 에서 Swagger UI로 API 문서 확인 가능합니다.
 
 ## 데이터베이스
+
 SQLite 파일(`app.db`)은 backend 폴더에 생성됩니다. 서버 첫 실행 시 테이블이 자동 생성됩니다.
 
 ## 에이전트 구조
@@ -67,6 +73,7 @@ SQLite 파일(`app.db`)은 backend 폴더에 생성됩니다. 서버 첫 실행 
 - 서브에이전트 결과 검토 및 통합
 
 단, 다음과 같은 간단한 작업은 메인 에이전트가 직접 처리:
+
 - 파일 읽기/탐색
 - git 명령어 실행
 - 문서 수정 (CLAUDE.md, README 등)
@@ -74,10 +81,10 @@ SQLite 파일(`app.db`)은 backend 폴더에 생성됩니다. 서버 첫 실행 
 
 ### 서브에이전트 및 담당 Skills
 
-| 에이전트 | 담당 영역 | Skills |
-|----------|----------|--------|
+| 에이전트   | 담당 영역                             | Skills                                  |
+| ---------- | ------------------------------------- | --------------------------------------- |
 | `be-agent` | API 엔드포인트, 스키마, 비즈니스 로직 | BE-CRUD, BE-refactor, BE-TEST, BE-DEBUG |
-| `fe-agent` | 페이지, 컴포넌트, API 연동, 스타일링 | FE-CRUD, FE-page, FE-api |
+| `fe-agent` | 페이지, 컴포넌트, API 연동, 스타일링  | FE-CRUD, FE-page, FE-api                |
 
 ### 작업 순서 (권장)
 
