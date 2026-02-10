@@ -1,6 +1,6 @@
 import os
 from datetime import datetime, timedelta
-from passlib.context import CryptContext
+import bcrypt
 from jose import jwt, JWTError
 from fastapi import HTTPException, status
 from dotenv import load_dotenv
@@ -13,9 +13,6 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "1440"))
 
-# bcrypt 컨텍스트 생성 (기본 12 rounds)
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
 
 def hash_password(password: str) -> str:
     """
@@ -27,7 +24,12 @@ def hash_password(password: str) -> str:
     Returns:
         해싱된 비밀번호 문자열
     """
-    return pwd_context.hash(password)
+    # bcrypt는 bytes를 요구하므로 encode 필요
+    password_bytes = password.encode('utf-8')
+    salt = bcrypt.gensalt(rounds=12)
+    hashed = bcrypt.hashpw(password_bytes, salt)
+    # 문자열로 반환 (데이터베이스 저장용)
+    return hashed.decode('utf-8')
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -41,7 +43,9 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     Returns:
         비밀번호가 일치하면 True, 아니면 False
     """
-    return pwd_context.verify(plain_password, hashed_password)
+    password_bytes = plain_password.encode('utf-8')
+    hashed_bytes = hashed_password.encode('utf-8')
+    return bcrypt.checkpw(password_bytes, hashed_bytes)
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
